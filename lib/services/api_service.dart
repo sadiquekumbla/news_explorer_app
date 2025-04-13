@@ -1,42 +1,47 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 import '../models/article.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://sadiquekumbla.github.io/news_explorer_app/api';
-  
-  Future<List<Article>> getNews(String category, {int limit = 20}) async {
+  static const String _baseUrl = 'assets/news.json';
+
+  Future<List<Article>> getNews() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/news.json'));
+      // Load the JSON file from assets
+      final String jsonString = await rootBundle.loadString(_baseUrl);
+      final Map<String, dynamic> jsonData = json.decode(jsonString);
       
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final articles = (data['articles'] as List)
-            .map((article) => Article.fromJson(article))
-            .toList();
-        return articles.take(limit).toList();
-      } else {
-        throw Exception('Failed to load news');
-      }
+      // Parse the articles from the JSON data
+      final List<dynamic> articlesJson = jsonData['articles'];
+      return articlesJson.map((json) => Article.fromJson(json)).toList();
     } catch (e) {
-      throw Exception('Error fetching news: $e');
+      print('Error loading news: $e');
+      return [];
+    }
+  }
+
+  Future<List<Article>> getNewsForCategory(String category) async {
+    try {
+      final articles = await getNews();
+      return articles.where((article) => 
+        article.source.toLowerCase().contains(category.toLowerCase()) ||
+        article.title.toLowerCase().contains(category.toLowerCase())
+      ).toList();
+    } catch (e) {
+      print('Error getting news for category: $e');
+      return [];
     }
   }
 
   Future<List<String>> getCategories() async {
-    try {
-      final response = await http.get(Uri.parse('$baseUrl/categories.json'));
-      
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return (data['categories'] as List)
-            .map((category) => category['id'] as String)
-            .toList();
-      } else {
-        throw Exception('Failed to load categories');
-      }
-    } catch (e) {
-      throw Exception('Error fetching categories: $e');
-    }
+    // For now, return a static list of categories
+    return [
+      'Technology',
+      'Business',
+      'Science',
+      'Health',
+      'Entertainment',
+      'Sports'
+    ];
   }
 } 

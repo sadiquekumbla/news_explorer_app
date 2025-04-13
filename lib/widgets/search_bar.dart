@@ -18,9 +18,7 @@ class CustomSearchBar extends StatelessWidget {
           ),
         ),
         onSubmitted: (value) {
-          if (value.isNotEmpty) {
-            context.read<NewsProvider>().selectCategory(value);
-          }
+          context.read<NewsProvider>().search(value);
         },
       ),
     );

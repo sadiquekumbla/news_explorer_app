@@ -1,0 +1,60 @@
+{
+  "articles": [
+    {
+      "title": "Flutter 3.0 Released with Major Improvements",
+      "link": "https://flutter.dev/blog/2023/05/10/flutter-3-10",
+      "pubDate": "2023-05-10T14:30:00Z",
+      "summary": "Flutter 3.10 brings significant performance improvements, new widgets, and better developer tools.",
+      "source": "Flutter Team"
+    },
+    {
+      "title": "Dart 3.0 Introduces Sound Null Safety",
+      "link": "https://dart.dev/guides/language/language-tour#null-safety",
+      "pubDate": "2023-05-15T09:15:00Z",
+      "summary": "Dart 3.0 introduces sound null safety, making your code more robust and preventing null reference errors.",
+      "source": "Dart Team"
+    },
+    {
+      "title": "Google I/O 2023 Highlights",
+      "link": "https://io.google/2023/",
+      "pubDate": "2023-05-20T16:45:00Z",
+      "summary": "Google I/O 2023 showcased new AI features, Android updates, and developer tools.",
+      "source": "Google"
+    },
+    {
+      "title": "Flutter for Web: Production-Ready",
+      "link": "https://flutter.dev/web",
+      "pubDate": "2023-06-01T11:20:00Z",
+      "summary": "Flutter for Web is now production-ready with improved performance and compatibility.",
+      "source": "Flutter Team"
+    },
+    {
+      "title": "Building Cross-Platform Apps with Flutter",
+      "link": "https://flutter.dev/docs/get-started",
+      "pubDate": "2023-06-10T13:40:00Z",
+      "summary": "Learn how to build beautiful, natively compiled applications for mobile, web, and desktop from a single codebase.",
+      "source": "Flutter Documentation"
+    },
+    {
+      "title": "Sample Technology News 1",
+      "link": "https://example.com/tech1",
+      "pubDate": "2024-03-20T10:00:00Z",
+      "summary": "This is a sample technology news article about the latest innovations in AI.",
+      "source": "Tech News"
+    },
+    {
+      "title": "Sample Business News 1",
+      "link": "https://example.com/business1",
+      "pubDate": "2024-03-20T09:30:00Z",
+      "summary": "A sample business news article about market trends and economic indicators.",
+      "source": "Business Daily"
+    },
+    {
+      "title": "Sample Sports News 1",
+      "link": "https://example.com/sports1",
+      "pubDate": "2024-03-20T08:00:00Z",
+      "summary": "Latest updates from the world of sports, including match results and player transfers.",
+      "source": "Sports Central"
+    }
+  ]
+} 

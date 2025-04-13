@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import '../providers/news_provider.dart';
-import '../widgets/category_grid.dart';
 import '../widgets/news_list.dart';
 import '../widgets/search_bar.dart';
 
@@ -33,7 +31,7 @@ class HomeScreen extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                if (newsProvider.error != null) {
+                if (newsProvider.error.isNotEmpty) {
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -52,23 +50,13 @@ class HomeScreen extends StatelessWidget {
                   );
                 }
 
-                return Column(
-                  children: [
-                    CategoryGrid(
-                      categories: newsProvider.categories,
-                      selectedCategory: newsProvider.selectedCategory,
-                      onCategorySelected: (category) {
-                        newsProvider.selectCategory(category);
-                      },
-                    ),
-                    Expanded(
-                      child: NewsList(
-                        articles: newsProvider.newsArticles,
-                        onRefresh: () => newsProvider.refresh(),
-                      ),
-                    ),
-                  ],
-                );
+                if (newsProvider.articles.isEmpty) {
+                  return const Center(
+                    child: Text('No news articles found.'),
+                  );
+                }
+
+                return NewsList(articles: newsProvider.articles);
               },
             ),
           ),

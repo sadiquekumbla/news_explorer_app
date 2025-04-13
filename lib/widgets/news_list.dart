@@ -8,18 +8,16 @@ import '../models/article.dart';
 
 class NewsList extends StatelessWidget {
   final List<Article> articles;
-  final Future<void> Function() onRefresh;
 
   const NewsList({
     super.key,
     required this.articles,
-    required this.onRefresh,
   });
 
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: onRefresh,
+      onRefresh: () => context.read<NewsProvider>().refresh(),
       child: ListView.builder(
         itemCount: articles.length,
         itemBuilder: (context, index) {
