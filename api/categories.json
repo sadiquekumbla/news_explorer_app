@@ -1,1 +1,12 @@
-{"categories":[{"id":"technology","name":"Technology","icon":"computer"}]}
+{
+  "categories": [
+    { "id": "technology", "name": "Technology" },
+    { "id": "business", "name": "Business" },
+    { "id": "science", "name": "Science" },
+    { "id": "health", "name": "Health" },
+    { "id": "entertainment", "name": "Entertainment" },
+    { "id": "sports", "name": "Sports" },
+    { "id": "world", "name": "World" },
+    { "id": "politics", "name": "Politics" }
+  ]
+}

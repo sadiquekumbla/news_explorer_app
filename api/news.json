@@ -1,1 +1,39 @@
-{"articles":[{"title":"Flutter 3.0 Released","link":"https://flutter.dev/blog","pubDate":"2024-03-15T10:30:00Z","summary":"Flutter 3.0 brings improvements","source":"Flutter Team"}]}
+{
+  "articles": [
+    {
+      "title": "New AI Breakthrough in Natural Language Processing",
+      "link": "https://example.com/ai-breakthrough",
+      "pubDate": "2023-04-13T10:30:00Z",
+      "summary": "Researchers have developed a new AI model that significantly improves natural language processing capabilities, potentially revolutionizing how machines understand human language.",
+      "source": "Tech News"
+    },
+    {
+      "title": "Global Economy Shows Signs of Recovery",
+      "link": "https://example.com/economy-recovery",
+      "pubDate": "2023-04-12T15:45:00Z",
+      "summary": "Recent economic indicators suggest a gradual recovery from the global downturn, with experts predicting steady growth in the coming quarters.",
+      "source": "Business Daily"
+    },
+    {
+      "title": "New Study Reveals Benefits of Intermittent Fasting",
+      "link": "https://example.com/intermittent-fasting",
+      "pubDate": "2023-04-11T09:15:00Z",
+      "summary": "A comprehensive study has found that intermittent fasting may improve metabolic health and reduce the risk of chronic diseases.",
+      "source": "Health Journal"
+    },
+    {
+      "title": "SpaceX Successfully Launches New Satellite Constellation",
+      "link": "https://example.com/spacex-launch",
+      "pubDate": "2023-04-10T14:20:00Z",
+      "summary": "SpaceX has successfully launched another batch of satellites for its Starlink constellation, bringing global internet coverage closer to reality.",
+      "source": "Space News"
+    },
+    {
+      "title": "New Environmental Policy Announced by Global Leaders",
+      "link": "https://example.com/environmental-policy",
+      "pubDate": "2023-04-09T11:00:00Z",
+      "summary": "World leaders have announced a new environmental policy aimed at reducing carbon emissions and combating climate change.",
+      "source": "World News"
+    }
+  ]
+}
