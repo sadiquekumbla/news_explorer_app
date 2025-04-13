@@ -10,13 +10,13 @@ import 'package:http/http.dart' as http;
 import '../models/article.dart';
 import '../services/news_service.dart';
 
-class NewsProvider with ChangeNotifier {
+class NewsProvider extends ChangeNotifier {
   final ApiService _apiService;
   final NewsService _newsService = NewsService();
   
-  List<app_models.Category> _categories = [];
-  List<NewsArticle> _newsArticles = [];
-  String _currentCategory = 'technology';
+  List<String> _categories = [];
+  List<Article> _newsArticles = [];
+  String _selectedCategory = 'technology';
   bool _isLoading = false;
   bool _isOffline = false;
   String? _error;
@@ -27,13 +27,13 @@ class NewsProvider with ChangeNotifier {
   static const int _cacheDuration = 30 * 60 * 1000;
   
   NewsProvider(this._apiService) {
-    _initialize();
+    _loadInitialData();
   }
   
   // Getters
-  List<app_models.Category> get categories => _categories;
-  List<NewsArticle> get newsArticles => _newsArticles;
-  String get currentCategory => _currentCategory;
+  List<String> get categories => _categories;
+  List<Article> get newsArticles => _newsArticles;
+  String get selectedCategory => _selectedCategory;
   bool get isLoading => _isLoading;
   bool get isOffline => _isOffline;
   String? get error => _error;
@@ -48,7 +48,7 @@ class NewsProvider with ChangeNotifier {
     await _loadCategories();
     
     // Load news for current category
-    await _loadNewsForCategory(_currentCategory);
+    await _loadNewsForCategory(_selectedCategory);
   }
   
   // Check connectivity
@@ -64,7 +64,7 @@ class NewsProvider with ChangeNotifier {
       
       // If we're back online, refresh the data
       if (!_isOffline) {
-        _loadNewsForCategory(_currentCategory);
+        _loadNewsForCategory(_selectedCategory);
       }
     });
   }
@@ -77,17 +77,17 @@ class NewsProvider with ChangeNotifier {
       
       if (categoriesJson != null) {
         final data = json.decode(categoriesJson) as List;
-        _categories = data.map((json) => app_models.Category.fromJson(json)).toList();
+        _categories = data.map((json) => json as String).toList();
       } else {
         _categories = [
-          app_models.Category(id: 'technology', name: 'Technology', icon: '💻'),
-          app_models.Category(id: 'business', name: 'Business', icon: '💼'),
-          app_models.Category(id: 'entertainment', name: 'Entertainment', icon: '🎬'),
-          app_models.Category(id: 'health', name: 'Health', icon: '🏥'),
-          app_models.Category(id: 'science', name: 'Science', icon: '🔬'),
-          app_models.Category(id: 'sports', name: 'Sports', icon: '⚽'),
+          'technology',
+          'business',
+          'entertainment',
+          'health',
+          'science',
+          'sports',
         ];
-        await prefs.setString('categories', json.encode(_categories.map((c) => c.toJson()).toList()));
+        await prefs.setString('categories', json.encode(_categories));
       }
       notifyListeners();
     } catch (e) {
@@ -97,14 +97,14 @@ class NewsProvider with ChangeNotifier {
   }
   
   // Load news for a category
-  Future<void> _loadNewsForCategory(String category, {bool forceRefresh = false}) async {
+  Future<void> _loadNewsForCategory(String category) async {
     try {
       _isLoading = true;
       _error = '';
       notifyListeners();
       
       // Try to load from cache first if not forcing refresh
-      if (!forceRefresh) {
+      if (!isOffline) {
         final prefs = await SharedPreferences.getInstance();
         final cachedNews = prefs.getString('news_$category');
         final cachedTimestamp = prefs.getInt('news_${category}_timestamp');
@@ -113,8 +113,8 @@ class NewsProvider with ChangeNotifier {
           final now = DateTime.now().millisecondsSinceEpoch;
           if (now - cachedTimestamp < _cacheDuration) {
             final List<dynamic> data = json.decode(cachedNews);
-            _newsArticles = data.map((json) => NewsArticle.fromJson(json)).toList();
-            _currentCategory = category;
+            _newsArticles = data.map((json) => Article.fromJson(json)).toList();
+            _selectedCategory = category;
             _isLoading = false;
             notifyListeners();
             return;
@@ -123,8 +123,8 @@ class NewsProvider with ChangeNotifier {
       }
       
       // If cache is expired or doesn't exist, fetch from API
-      _newsArticles = await _apiService.getNewsByCategory(category);
-      _currentCategory = category;
+      _newsArticles = await _apiService.getNews(category);
+      _selectedCategory = category;
       
       // Cache the news
       final prefs = await SharedPreferences.getInstance();
@@ -140,8 +140,9 @@ class NewsProvider with ChangeNotifier {
   
   // Select a category
   Future<void> selectCategory(String category) async {
-    if (_currentCategory == category) return;
-    await _loadNewsForCategory(category);
+    if (category != _selectedCategory) {
+      await _loadNewsForCategory(category);
+    }
   }
   
   // Search news
@@ -158,7 +159,7 @@ class NewsProvider with ChangeNotifier {
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
-        _newsArticles = data.map((json) => NewsArticle.fromJson(json)).toList();
+        _newsArticles = data.map((json) => Article.fromJson(json)).toList();
       } else {
         _error = 'Failed to search news';
       }
@@ -171,8 +172,8 @@ class NewsProvider with ChangeNotifier {
   }
   
   // Refresh current category
-  Future<void> refreshCurrentCategory() async {
-    await _loadNewsForCategory(_currentCategory, forceRefresh: true);
+  Future<void> refresh() async {
+    await _loadNewsForCategory(_selectedCategory);
   }
 
   Future<void> fetchNews() async {
@@ -182,12 +183,12 @@ class NewsProvider with ChangeNotifier {
 
     try {
       final response = await http.get(
-        Uri.parse('${const String.fromEnvironment('API_URL')}/api/news?category=$_currentCategory'),
+        Uri.parse('${const String.fromEnvironment('API_URL')}/api/news?category=$_selectedCategory'),
       );
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
-        _newsArticles = data.map((json) => NewsArticle.fromJson(json)).toList();
+        _newsArticles = data.map((json) => Article.fromJson(json)).toList();
       } else {
         _error = 'Failed to load news';
       }
@@ -207,8 +208,20 @@ class NewsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> _initialize() async {
-    await _loadCategories();
-    await _loadNewsForCategory(_currentCategory);
+  Future<void> _loadInitialData() async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      _categories = await _apiService.getCategories();
+      await _loadNewsForCategory(_selectedCategory);
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 } 

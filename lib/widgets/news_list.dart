@@ -3,63 +3,49 @@ import 'package:provider/provider.dart';
 import '../providers/news_provider.dart';
 import 'news_item.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:intl/intl.dart';
+import '../models/article.dart';
 
 class NewsList extends StatelessWidget {
-  const NewsList({Key? key}) : super(key: key);
+  final List<Article> articles;
+  final Future<void> Function() onRefresh;
+
+  const NewsList({
+    super.key,
+    required this.articles,
+    required this.onRefresh,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<NewsProvider>(
-      builder: (context, newsProvider, child) {
-        final articles = newsProvider.newsArticles;
-        final isLoading = newsProvider.isLoading;
-        final error = newsProvider.error;
-        final isOffline = newsProvider.isOffline;
-
-        if (isLoading && articles.isEmpty) {
-          return _buildLoadingList();
-        }
-
-        if (error.isNotEmpty && articles.isEmpty) {
-          return _buildErrorWidget(error);
-        }
-
-        if (articles.isEmpty) {
-          return _buildEmptyWidget();
-        }
-
-        return Column(
-          children: [
-            if (isOffline)
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                color: Colors.amber[100],
-                child: Row(
-                  children: [
-                    Icon(Icons.wifi_off, color: Colors.amber[900]),
-                    SizedBox(width: 8),
-                    Text(
-                      'You are offline. Showing cached news.',
-                      style: TextStyle(color: Colors.amber[900]),
-                    ),
-                  ],
-                ),
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: ListView.builder(
+        itemCount: articles.length,
+        itemBuilder: (context, index) {
+          final article = articles[index];
+          return Card(
+            margin: const EdgeInsets.all(8.0),
+            child: ListTile(
+              title: Text(article.title),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(article.summary),
+                  const SizedBox(height: 4),
+                  Text(
+                    DateFormat('MMM d, y HH:mm').format(article.pubDate),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
               ),
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.only(top: 8, bottom: 16),
-                itemCount: articles.length,
-                itemBuilder: (context, index) {
-                  return NewsItem(
-                    article: articles[index],
-                    index: index,
-                  );
-                },
-              ),
+              onTap: () {
+                // TODO: Implement article detail view
+              },
             ),
-          ],
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

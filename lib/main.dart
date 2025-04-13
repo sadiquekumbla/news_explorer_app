@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'providers/news_provider.dart';
 import 'services/api_service.dart';
 import 'screens/home_screen.dart';
 
-void main() async {
-  // Ensure Flutter bindings are initialized
-  WidgetsFlutterBinding.ensureInitialized();
-  
-  // Load environment variables
-  await dotenv.load(fileName: ".env");
-  
+void main() {
   runApp(
     MultiProvider(
       providers: [
@@ -35,10 +28,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: ChangeNotifierProvider(
-        create: (_) => NewsProvider(ApiService()),
-        child: const HomeScreen(),
-      ),
+      home: const HomeScreen(),
     );
   }
 }

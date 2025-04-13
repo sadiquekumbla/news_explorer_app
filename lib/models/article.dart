@@ -1,7 +1,7 @@
 class Article {
   final String title;
   final String link;
-  final String pubDate;
+  final DateTime pubDate;
   final String summary;
   final String source;
 
@@ -17,7 +17,7 @@ class Article {
     return Article(
       title: json['title'] ?? '',
       link: json['link'] ?? '',
-      pubDate: json['pubDate'] ?? '',
+      pubDate: DateTime.parse(json['pubDate'] ?? DateTime.now().toIso8601String()),
       summary: json['summary'] ?? '',
       source: json['source'] ?? '',
     );
@@ -27,7 +27,7 @@ class Article {
     return {
       'title': title,
       'link': link,
-      'pubDate': pubDate,
+      'pubDate': pubDate.toIso8601String(),
       'summary': summary,
       'source': source,
     };
